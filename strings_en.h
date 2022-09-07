@@ -4,6 +4,10 @@
  * WiFiManager, a library for the ESP8266/Arduino platform
  * for configuration of WiFi credentials using a Captive Portal
  *
+ * This is a fork of tzapu/wifimanager by John Wickham that includes
+ * UI design and content changes to make WiFi setup more appealing to
+ * non-technical users, particularly those using iOS.
+ *
  * @author Creator tzapu
  * @author tablatronix
  * @version 0.0.0
@@ -36,39 +40,38 @@ const char HTTP_SCRIPT[]           PROGMEM = "<script>function c(l){"
 
 const char HTTP_HEAD_END[]         PROGMEM = "</head><body class='{c}'><div class='wrap'>"; // {c} = _bodyclass
 // example of embedded logo, base64 encoded inline, No styling here
-// const char HTTP_ROOT_MAIN[]        PROGMEM = "<img title=' alt=' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAADQElEQVRoQ+2YjW0VQQyE7Q6gAkgFkAogFUAqgFQAVACpAKiAUAFQAaECQgWECggVGH1PPrRvn3dv9/YkFOksoUhhfzwz9ngvKrc89JbnLxuA/63gpsCmwCADWwkNEji8fVNgotDM7osI/x777x5l9F6JyB8R4eeVql4P0y8yNsjM7KGIPBORp558T04A+CwiH1UVUItiUQmZ2XMReSEiAFgjAPBeVS96D+sCYGaUx4cFbLfmhSpnqnrZuqEJgJnd8cQplVLciAgX//Cf0ToIeOB9wpmloLQAwpnVmAXgdf6pwjpJIz+XNoeZQQZlODV9vhc1Tuf6owrAk/8qIhFbJH7eI3eEzsvydQEICqBEkZwiALfF70HyHPpqScPV5HFjeFu476SkRA0AzOfy4hYwstj2ZkDgaphE7m6XqnoS7Q0BOPs/sw0kDROzjdXcCMFCNwzIy0EcRcOvBACfh4k0wgOmBX4xjfmk4DKTS31hgNWIKBCI8gdzogTgjYjQWFMw+o9LzJoZ63GUmjWm2wGDc7EvDDOj/1IVMIyD9SUAL0WEhpriRlXv5je5S+U1i2N88zdPuoVkeB+ls4SyxCoP3kVm9jsjpEsBLoOBNC5U9SwpGdakFkviuFP1keblATkTENTYcxkzgxTKOI3jyDxqLkQT87pMA++H3XvJBYtsNbBN6vuXq5S737WqHkW1VgMQNXJ0RshMqbbT33sJ5kpHWymzcJjNTeJIymJZtSQd9NHQHS1vodoFoTMkfbJzpRnLzB2vi6BZAJxWaCr+62BC+jzAxVJb3dmmiLzLwZhZNPE5e880Suo2AZgB8e8idxherqUPnT3brBDTlPxO3Z66rVwIwySXugdNd+5ejhqp/+NmgIwGX3Py3QBmlEi54KlwmjkOytQ+iJrLJj23S4GkOeecg8G091no737qvRRdzE+HLALQoMTBbJgBsCj5RSWUlUVJiZ4SOljb05eLFWgoJ5oY6yTyJp62D39jDANoKKcSocPJD5dQYzlFAFZJflUArgTPZKZwLXAnHmerfJquUkKZEgyzqOb5TuDt1P3nwxobqwPocZA11m4A1mBx5IxNgRH21ti7KbAGiyNn3HoF/gJ0w05A8xclpwAAAABJRU5ErkJggg==' /><h1>{v}</h1><h3>WiFiManager</h3>";
-const char HTTP_ROOT_MAIN[]        PROGMEM = "<h1>{t}</h1><h3>{v}</h3>";
+const char HTTP_ROOT_MAIN[]        PROGMEM = "<svg class='top' width='52' height='38' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M3.485 16.257c.508.535 1.304.513 1.812-.045 5.48-5.842 12.663-8.92 20.707-8.92 8.089 0 15.293 3.1 20.752 8.965.486.49 1.26.49 1.746-.045l3.138-3.166c.464-.49.464-1.115.088-1.584C46.336 4.75 36.303 0 26.004 0 15.684 0 5.651 4.75.28 11.462c-.397.469-.375 1.093.089 1.584l3.116 3.211Zm9.282 9.255c.574.557 1.326.49 1.856-.09 2.74-2.965 7.05-5.017 11.381-4.995 4.376-.022 8.686 2.074 11.47 5.085.486.557 1.194.535 1.746 0l3.514-3.457c.442-.424.486-1.026.088-1.516-3.514-4.237-9.878-7.248-16.818-7.248-6.939 0-13.326 3.01-16.84 7.248-.397.49-.353 1.07.11 1.516l3.493 3.457ZM26.004 38c.575 0 1.061-.268 1.967-1.137l5.459-5.308c.442-.424.53-1.093.133-1.56-1.614-2.075-4.443-3.658-7.559-3.658-3.182 0-6.077 1.672-7.69 3.835-.288.447-.133.982.265 1.383l5.459 5.308c.906.87 1.392 1.137 1.966 1.137Z' fill='#949494' fill-opacity='.6'/></svg><h1>{t}</h1><h3>{v}</h3>";
 
 const char * const HTTP_PORTAL_MENU[] PROGMEM = {
-"<form action='/wifi'    method='get'><button>Configure WiFi</button></form><br/>\n", // MENU_WIFI
-"<form action='/0wifi'   method='get'><button>Configure WiFi (No Scan)</button></form><br/>\n", // MENU_WIFINOSCAN
-"<form action='/info'    method='get'><button>Info</button></form><br/>\n", // MENU_INFO
-"<form action='/param'   method='get'><button>Setup</button></form><br/>\n",//MENU_PARAM
-"<form action='/close'   method='get'><button>Close</button></form><br/>\n", // MENU_CLOSE
-"<form action='/restart' method='get'><button>Restart</button></form><br/>\n",// MENU_RESTART
-"<form action='/exit'    method='get'><button>Exit</button></form><br/>\n",  // MENU_EXIT
-"<form action='/erase'   method='get'><button class='D'>Erase</button></form><br/>\n", // MENU_ERASE
-"<form action='/update'  method='get'><button>Update</button></form><br/>\n",// MENU_UPDATE
-"<hr><br/>" // MENU_SEP
+"<form action='/wifi'    method='get'><button>Choose a Network</button></form>\n", // MENU_WIFI
+"<form action='/0wifi'   method='get'><button class='inline'>Configure WiFi Manually</button></form>\n", // MENU_WIFINOSCAN
+"<form action='/info'    method='get'><button class='inline'>Device Info</button></form>\n", // MENU_INFO
+"<form action='/param'   method='get'><button class='inline'>Setup</button></form>\n",//MENU_PARAM
+"<form action='/close'   method='get'><button class='inline'>Close</button></form>\n", // MENU_CLOSE
+"<form action='/restart' method='get'><button class='inline'>Restart</button></form>\n",// MENU_RESTART
+"<form action='/exit'    method='get'><button class='inline'>Exit Setup</button></form>\n",  // MENU_EXIT
+"<form action='/erase'   method='get'><button class='D'>Erase</button></form>\n", // MENU_ERASE
+"<form action='/update'  method='get'><button class='inline'>Upload Firmware</button></form>\n",// MENU_UPDATE
+"<br>"
 };
 
 // const char HTTP_PORTAL_OPTIONS[]   PROGMEM = strcat(HTTP_PORTAL_MENU[0] , HTTP_PORTAL_MENU[3] , HTTP_PORTAL_MENU[7]);
 const char HTTP_PORTAL_OPTIONS[]   PROGMEM = "";
 const char HTTP_ITEM_QI[]          PROGMEM = "<div role='img' aria-label='{r}%' title='{r}%' class='q q-{q} {i} {h}'></div>"; // rssi icons
 const char HTTP_ITEM_QP[]          PROGMEM = "<div class='q {h}'>{r}%</div>"; // rssi percentage {h} = hidden showperc pref
-const char HTTP_ITEM[]             PROGMEM = "<div><a href='#p' onclick='c(this)' data-ssid='{V}'>{v}</a>{qi}{qp}</div>"; // {q} = HTTP_ITEM_QI, {r} = HTTP_ITEM_QP
+const char HTTP_ITEM[]             PROGMEM = "<li><a href='#p' onclick='c(this)' data-ssid='{V}'>{v}</a>{qi}{qp}</li>"; // {q} = HTTP_ITEM_QI, {r} = HTTP_ITEM_QP
 // const char HTTP_ITEM[]            PROGMEM = "<div><a href='#p' onclick='c(this)'>{v}</a> {R} {r}% {q} {e}</div>"; // test all tokens
 
 const char HTTP_FORM_START[]       PROGMEM = "<form method='POST' action='{v}'>";
-const char HTTP_FORM_WIFI[]        PROGMEM = "<label for='s'>SSID</label><input id='s' name='s' maxlength='32' autocorrect='off' autocapitalize='none' placeholder='{v}'><br/><label for='p'>Password</label><input id='p' name='p' maxlength='64' type='password' placeholder='{p}'><input type='checkbox' onclick='f()'> Show Password";
+const char HTTP_FORM_WIFI[]        PROGMEM = "<div class='row'><label for='s'>Network Name</label><input id='s' name='s' maxlength='32' autocorrect='off' autocapitalize='none' placeholder='{v}'></div><div class='row'><label for='p'>Password</label><input id='p' name='p' maxlength='64' type='password' placeholder='{p}'></div>";
 const char HTTP_FORM_WIFI_END[]    PROGMEM = "";
 const char HTTP_FORM_STATIC_HEAD[] PROGMEM = "<hr><br/>";
-const char HTTP_FORM_END[]         PROGMEM = "<br/><br/><button type='submit'>Save</button></form>";
+const char HTTP_FORM_END[]         PROGMEM = "<br/><br/><button type='submit'>Save & Join</button></form>";
 const char HTTP_FORM_LABEL[]       PROGMEM = "<label for='{i}'>{t}</label>";
 const char HTTP_FORM_PARAM_HEAD[]  PROGMEM = "<hr><br/>";
 const char HTTP_FORM_PARAM[]       PROGMEM = "<br/><input id='{i}' name='{n}' maxlength='{l}' value='{v}' {c}>\n"; // do not remove newline!
 
-const char HTTP_SCAN_LINK[]        PROGMEM = "<br/><form action='/wifi?refresh=1' method='POST'><button name='refresh' value='1'>Refresh</button></form>";
+const char HTTP_SCAN_LINK[]        PROGMEM = "<br/><form action='/wifi?refresh=1' method='POST'><button class='inline' name='refresh' value='1'>Refresh List</button></form>";
 const char HTTP_SAVED[]            PROGMEM = "<div class='msg'>Saving Credentials<br/>Trying to connect ESP to network.<br />If it fails reconnect to AP to try again</div>";
 const char HTTP_PARAMSAVED[]       PROGMEM = "<div class='msg S'>Saved<br/></div>";
 const char HTTP_END[]              PROGMEM = "</div></body></html>";
@@ -81,17 +84,24 @@ const char HTTP_STATUS_OFF[]       PROGMEM = "<div class='msg {c}'><strong>Not C
 const char HTTP_STATUS_OFFPW[]     PROGMEM = "<br/>Authentication Failure"; // STATION_WRONG_PASSWORD,  no eps32
 const char HTTP_STATUS_OFFNOAP[]   PROGMEM = "<br/>AP not found";   // WL_NO_SSID_AVAIL
 const char HTTP_STATUS_OFFFAIL[]   PROGMEM = "<br/>Could not Connect"; // WL_CONNECT_FAILED
-const char HTTP_STATUS_NONE[]      PROGMEM = "<div class='msg'>No AP set</div>";
+const char HTTP_STATUS_NONE[]      PROGMEM = "<div class='msg'>No WiFi network is configured yet.</div>";
 const char HTTP_BR[]               PROGMEM = "<br/>";
 
 const char HTTP_STYLE[]            PROGMEM = "<style>"
-".c,body{text-align:center;font-family:verdana}div,input,select{padding:5px;font-size:1em;margin:5px 0;box-sizing:border-box}"
+"body{background-color:#F2F1F6}"
+".c,body{text-align:center;font-family:system-ui}div,input,select{padding:5px;font-size:1em;margin:5px 0;box-sizing:border-box}"
 "input,button,select,.msg{border-radius:.3rem;width: 100%}input[type=radio],input[type=checkbox]{width:auto}"
-"button,input[type='button'],input[type='submit']{cursor:pointer;border:0;background-color:#1fa3ec;color:#fff;line-height:2.4rem;font-size:1.2rem;width:100%}"
-"input[type='file']{border:1px solid #1fa3ec}"
-".wrap {text-align:left;display:inline-block;min-width:260px;max-width:500px}"
+"button,input[type='button'],input[type='submit']{cursor:pointer;border:0;background-color:#0B84FF;color:#fff;font-size:1rem;font-weight:600;width:100%;border-radius:14px;padding:17px;-webkit-tap-highlight-color: transparent;}"
+"button.inline{background-color: transparent;color:#0B84FF;}"
+"input[type='file']{border:1px solid #0B84FF}"
+".wrap {text-align:left;min-width:260px;}"
+"svg.top{display:block;margin:0 auto;}"
+"h1{text-align:center} h1+h3{text-align:center;opacity:0.65;}"
+"hr{border:0;height:1px;background:rgba(100,100,100,0.25);}"
 // links
-"a{color:#000;font-weight:700;text-decoration:none}a:hover{color:#1fa3ec;text-decoration:underline}"
+"a{color:#000;font-weight:500;text-decoration:none} a::after{content:'';width:calc(100% - 10px);margin-left:10px;height:1px;background-color:rgba(100,100,100,0.25)}"
+"ul.network-list{list-style:none; padding: 0} ul.network-list li{margin:0;background-color:white;padding:15px;position:relative} ul.network-list li:not(:last-of-type)::after{content:'';width:calc(100% - 15px);height:0.5px;left:15px;background-color:rgba(100,100,100,0.5);position:absolute;bottom:0;} ul.network-list li:first-of-type{border-top-left-radius:12px;border-top-right-radius:12px;} ul.network-list li:last-of-type{border-bottom-left-radius:12px;border-bottom-right-radius:12px;}"
+"form[action=wifisave] .row{background-color:white;display:flex;align-items:center;justify-content:space-between;margin:0;padding:5px 15px;} form[action=wifisave] .row:first-of-type{border-top-left-radius:12px;border-top-right-radius:12px;position:relative;} form[action=wifisave] .row:first-of-type::after{content:'';width:calc(100% - 15px);height:0.5px;left:15px;background-color:rgba(100,100,100,0.5);position:absolute;bottom:0;} form[action=wifisave] .row:last-of-type{border-bottom-left-radius:12px;border-bottom-right-radius:12px;} form[action=wifisave] .row label{flex-shrink:0;font-weight:500} form[action=wifisave] input{border:0;background-color:transparent;text-align:right} form[action=wifisave] input:focus{border:0;outline:0}"
 // quality icons
 ".q{height:16px;margin:0;padding:0 5px;text-align:right;min-width:38px;float:right}.q.q-0:after{background-position-x:0}.q.q-1:after{background-position-x:-16px}.q.q-2:after{background-position-x:-32px}.q.q-3:after{background-position-x:-48px}.q.q-4:after{background-position-x:-64px}.q.l:before{background-position-x:-80px;padding-right:5px}.ql .q{float:left}.q:after,.q:before{content:'';width:16px;height:16px;display:inline-block;background-repeat:no-repeat;background-position: 16px 0;"
 "background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAAAQCAMAAADeZIrLAAAAJFBMVEX///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADHJj5lAAAAC3RSTlMAIjN3iJmqu8zd7vF8pzcAAABsSURBVHja7Y1BCsAwCASNSVo3/v+/BUEiXnIoXkoX5jAQMxTHzK9cVSnvDxwD8bFx8PhZ9q8FmghXBhqA1faxk92PsxvRc2CCCFdhQCbRkLoAQ3q/wWUBqG35ZxtVzW4Ed6LngPyBU2CobdIDQ5oPWI5nCUwAAAAASUVORK5CYII=');}"
@@ -100,26 +110,28 @@ const char HTTP_STYLE[]            PROGMEM = "<style>"
 "background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALwAAAAgCAMAAACfM+KhAAAALVBMVEX///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAOrOgAAAADnRSTlMAESIzRGZ3iJmqu8zd7gKjCLQAAACmSURBVHgB7dDBCoMwEEXRmKlVY3L//3NLhyzqIqSUggy8uxnhCR5Mo8xLt+14aZ7wwgsvvPA/ofv9+44334UXXngvb6XsFhO/VoC2RsSv9J7x8BnYLW+AjT56ud/uePMdb7IP8Bsc/e7h8Cfk912ghsNXWPpDC4hvN+D1560A1QPORyh84VKLjjdvfPFm++i9EWq0348XXnjhhT+4dIbCW+WjZim9AKk4UZMnnCEuAAAAAElFTkSuQmCC');"
 "background-size: 95px 16px;}}"
 // msg callouts
-".msg{padding:20px;margin:20px 0;border:1px solid #eee;border-left-width:5px;border-left-color:#777}.msg h4{margin-top:0;margin-bottom:5px}.msg.P{border-left-color:#1fa3ec}.msg.P h4{color:#1fa3ec}.msg.D{border-left-color:#dc3630}.msg.D h4{color:#dc3630}.msg.S{border-left-color: #5cb85c}.msg.S h4{color: #5cb85c}"
+".msg{padding:20px;margin:20px 0;border:1px solid rgba(100,100,100,0.25)}.msg h4{margin-top:0;margin-bottom:5px}.msg.P h4{color:#0B84FF}.msg.D h4{color:#FF453A}.msg.S h4{color: #5cb85c}"
 // lists
 "dt{font-weight:bold}dd{margin:0;padding:0 0 0.5em 0;min-height:12px}"
-"td{vertical-align: top;}"
+"td{vertical-align: top;} td:nth-of-type(odd){font-family:monospace}"
 ".h{display:none}"
 "button{transition: 0s opacity;transition-delay: 3s;transition-duration: 0s;cursor: pointer}"
-"button.D{background-color:#dc3630}"
+"button.D{background-color:#FF453A}"
 "button:active{opacity:50% !important;cursor:wait;transition-delay: 0s}"
 // invert
-"body.invert,body.invert a,body.invert h1 {background-color:#060606;color:#fff;}"
-"body.invert .msg{color:#fff;background-color:#282828;border-top:1px solid #555;border-right:1px solid #555;border-bottom:1px solid #555;}"
-"body.invert .q[role=img]{-webkit-filter:invert(1);filter:invert(1);}"
-":disabled {opacity: 0.5;}"
+"@media(prefers-color-scheme: dark){"
+"body, h1 {background-color:#060606;color:#fff;}"
+"a, input{color:white;background-color:transparent;}"
+"ul.network-list li, form[action=wifisave] .row{background-color:#1D1C1E}"
+".msg{color:#fff;background-color:#181818;}"
+".q[role=img]{-webkit-filter:invert(1);filter:invert(1);}"
+":disabled {opacity: 0.5;}}"
 "</style>";
 
 #ifndef WM_NOHELP
 const char HTTP_HELP[]             PROGMEM =
  "<br/><h3>Available Pages</h3><hr>"
  "<table class='table'>"
- "<thead><tr><th>Page</th><th>Function</th></tr></thead><tbody>"
  "<tr><td><a href='/'>/</a></td>"
  "<td>Menu page.</td></tr>"
  "<tr><td><a href='/wifi'>/wifi</a></td>"
@@ -140,8 +152,7 @@ const char HTTP_HELP[]             PROGMEM =
  "<td>Reboot the device</td></tr>"
  "<tr><td>/erase</td>"
  "<td>Erase WiFi configuration and reboot Device. Device will not reconnect to a network until new WiFi configuration data is entered.</td></tr>"
- "</table>"
- "<p/>Github <a href='https://github.com/tzapu/WiFiManager'>https://github.com/tzapu/WiFiManager</a>.";
+ "</table>";
 #else
 const char HTTP_HELP[]             PROGMEM = "";
 #endif
@@ -216,7 +227,7 @@ const char HTTP_INFO_aboutarduino[] PROGMEM = "<dt>Arduino</dt><dd>{1}</dd>";
 const char HTTP_INFO_aboutsdk[]     PROGMEM = "<dt>ESP-SDK/IDF</dt><dd>{1}</dd>";
 const char HTTP_INFO_aboutdate[]    PROGMEM = "<dt>Build Date</dt><dd>{1}</dd>";
 
-const char S_brand[]              PROGMEM = "WiFiManager";
+const char S_brand[]              PROGMEM = "WiFi Setup";
 const char S_debugPrefix[]        PROGMEM = "*wm:";
 const char S_y[]                  PROGMEM = "Yes";
 const char S_n[]                  PROGMEM = "No";

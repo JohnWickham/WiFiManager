@@ -1,8 +1,8 @@
 {
-  "name": "WiFiManager",
+  "name": "WiFiManager-Fork",
   "version": "2.0.12-beta",
   "keywords": "wifi,wi-fi,esp,esp8266,esp32,espressif8266,espressif32,nodemcu,wemos,arduino",
-  "description": "WiFi Configuration manager with web configuration portal for ESP boards",
+  "description": "Enhanced fork of Tzapu's WiFiManager library",
   "authors":
   [
     {
@@ -11,14 +11,18 @@
     },
     {
         "name": "tablatronix",
-        "url": "https://github.com/tablatronix",
+        "url": "https://github.com/tablatronix"
+    },
+    {
+        "name": "JohnWickham",
+        "url": "https://github.com/JohnWickham",
         "maintainer": true
     }
   ],
   "repository":
   {
     "type": "git",
-    "url": "https://github.com/tzapu/WiFiManager.git"
+    "url": "https://github.com/JohnWickham/WiFiManager.git"
   },
   "frameworks": "arduino",
   "platforms": 

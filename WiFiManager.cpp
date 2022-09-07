@@ -1538,6 +1538,9 @@ String WiFiManager::WiFiManager::getScanItemOut(){
       page += F("<br/><br/>");
     }
     else {
+      page += F("<p style='text-align:center'>Choose a network to connect to. This network will be joined automatically in the future.</p>");
+      page += F("<ul class='network-list'>");
+    
       #ifdef WM_DEBUG_LEVEL
       DEBUG_WM(n,F("networks found"));
       #endif
@@ -1639,6 +1642,7 @@ String WiFiManager::WiFiManager::getScanItemOut(){
 
       }
       page += FPSTR(HTTP_BR);
+      page += F("</ul>");
     }
 
     return page;
@@ -2430,7 +2434,7 @@ void WiFiManager::reportStatus(String &page){
     }
   }
   else {
-    str = FPSTR(HTTP_STATUS_NONE);
+    //str = FPSTR(HTTP_STATUS_NONE);
   }
   page += str;
 }
