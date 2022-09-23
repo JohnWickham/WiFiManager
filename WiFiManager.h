@@ -39,8 +39,20 @@
 #define WM_NOSOFTAPSSID    // no softapssid() @todo shim
 #endif
 
-// #ifdef ARDUINO_ESP32S3_DEV
-#ifdef ESP32
+// #ifdef CONFIG_IDF_TARGET_ESP32S2
+// #warning ESP32S2
+// #endif
+
+// #ifdef CONFIG_IDF_TARGET_ESP32C3
+// #warning ESP32C3
+// #endif
+
+// #ifdef CONFIG_IDF_TARGET_ESP32S3
+// #warning ESP32S3
+// #endif
+
+#if defined(ARDUINO_ESP32S3_DEV) || defined(CONFIG_IDF_TARGET_ESP32S3)
+#warning "WM_NOTEMP"
 #define WM_NOTEMP // disabled temp sensor, have to determine which chip we are on
 #endif
 
@@ -97,7 +109,21 @@
     #endif
 
     #ifdef WM_RTC
-        #include <rom/rtc.h>
+        #ifdef ESP_IDF_VERSION_MAJOR // IDF 4+
+        #if CONFIG_IDF_TARGET_ESP32 // ESP32/PICO-D4
+        #include "esp32/rom/rtc.h"
+        #elif CONFIG_IDF_TARGET_ESP32S2
+        #include "esp32s2/rom/rtc.h"
+        #elif CONFIG_IDF_TARGET_ESP32C3
+        #include "esp32c3/rom/rtc.h"
+        #elif CONFIG_IDF_TARGET_ESP32S3
+        #include "esp32s3/rom/rtc.h"
+        #else
+        #error Target CONFIG_IDF_TARGET is not supported
+        #endif
+        #else // ESP32 Before IDF 4.0
+        #include "rom/rtc.h"
+        #endif
     #endif
 
 #else
@@ -275,6 +301,9 @@ class WiFiManager
 
     //called just before doing OTA update
     void          setPreOtaUpdateCallback( std::function<void()> func );
+
+    //called when config portal is timeout
+    void          setConfigPortalTimeoutCallback( std::function<void()> func );
 
     //sets timeout before AP,webserver loop ends and exits even if there has been no setup.
     //useful for devices that failed to connect at some point and got stuck in a webserver loop
@@ -656,12 +685,17 @@ class WiFiManager
     #if defined(ESP_ARDUINO_VERSION) && defined(ESP_ARDUINO_VERSION_VAL)
 
         #define WM_ARDUINOVERCHECK ESP_ARDUINO_VERSION >= ESP_ARDUINO_VERSION_VAL(2, 0, 0)
+        #define WM_ARDUINOVERCHECK_204 ESP_ARDUINO_VERSION <= ESP_ARDUINO_VERSION_VAL(2, 0, 5)
 
         #ifdef WM_ARDUINOVERCHECK
             #define WM_ARDUINOEVENTS
         #else
             #define WM_NOSOFTAPSSID
             #define WM_NOCOUNTRY
+        #endif
+
+        #ifdef WM_ARDUINOVERCHECK_204
+            #define WM_DISCONWORKAROUND
         #endif
 
     #else 
@@ -771,6 +805,7 @@ class WiFiManager
     std::function<void()> _saveparamscallback;
     std::function<void()> _resetcallback;
     std::function<void()> _preotaupdatecallback;
+    std::function<void()> _configportaltimeoutcallback;
 
     template <class T>
     auto optionalIPFromString(T *obj, const char *s) -> decltype(  obj->fromString(s)  ) {
